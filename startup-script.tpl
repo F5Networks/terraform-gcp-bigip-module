@@ -27,6 +27,9 @@ runtime_parameters:
   - name: USER_NAME
     type: static
     value: ${bigip_username}
+  - name: SSH_KEYS
+    type: static
+    value: "${ssh_keypair}"
 EOF
 
 if ${gcp_secret_manager_authentication}; then
