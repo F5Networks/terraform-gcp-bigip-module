@@ -1,10 +1,10 @@
-## Deploys BIG-IP in Gcp Cloud
+# Deploys BIG-IP in Gcp Cloud
 
 This Terraform module deploys N-nic F5 BIG-IP in Gcp cloud,and with module count feature we can also deploy multiple instances of BIG-IP.
 
 ## Prerequisites
 
-Getting Started with the Google Provider ( https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started )
+Getting Started with the Google Provider ( <https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started> )
 
 This module is supported from Terraform 0.13 version onwards.
 
@@ -23,7 +23,7 @@ This module is supported in the following bigip and terraform version
 
 | BIGIP version | Terraform 0.14 | Terraform 1.0.2 |
 |---------------|----------------|-----------------|
-| BIG-IP 16.x   |        X       |       X         |			
+| BIG-IP 16.x   |        X       |       X         |
 | BIG-IP 15.x   |        X       |       X         |
 | BIG-IP 14.x   |        X       |       X         |
 
@@ -66,7 +66,7 @@ This template uses PayGo BIG-IP image for the deployment (as default). If you wo
 ```
 
 3.Add the corresponding license key in DO declaration( Declarative Onboarding ), this DO can be in custom run-time-int script or outside of it.
-   ( https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/bigip-examples.html#standalone-declaration )
+   ( <https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/bigip-examples.html#standalone-declaration> )
 
 ```bash
          "myLicense": {
@@ -86,7 +86,7 @@ This template uses PayGo BIG-IP image for the deployment (as default). If you wo
 #Example 3-NIC Deployment with custom run-time-init
 module bigip {
   count               = var.instance_count
-  source              = "../.."
+  source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-3nic"
   project_id          = var.project_id
   zone                = var.zone
@@ -120,7 +120,7 @@ EOS
 
 ## Example Usage
 
-We have provided some common deployment [examples](https://github.com/f5devcentral/terraform-gcp-bigip-module/tree/main/examples)
+We have provided some common deployment [examples](https://github.com/F5Networks/terraform-gcp-bigip-module/tree/main/examples)
 
 ~> **Note:** Users can have dynamic or static private ip allocation.If primary/secondary private ip value is null, it will be dynamic or else static private ip allocation.
 
@@ -137,7 +137,7 @@ Below example snippets show how this module is called. ( Dynamic private ip allo
 #Example 1-NIC Deployment Module usage
 module bigip {
   count           = var.instance_count
-  source          = "../.."
+  source          = "F5Networks/bigip-module/gcp"
   prefix          = "bigip-gcp-1nic"
   project_id      = var.project_id
   zone            = var.zone
@@ -150,7 +150,7 @@ module bigip {
 
 module "bigip" {
   count               = var.instance_count
-  source              = "../.."
+  source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-2nic"
   project_id          = var.project_id
   zone                = var.zone
@@ -164,7 +164,7 @@ module "bigip" {
 
 module bigip {
   count               = var.instance_count
-  source              = "../.."
+  source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-3nic"
   project_id          = var.project_id
   zone                = var.zone
@@ -179,7 +179,7 @@ module bigip {
 
 module bigip s
   count               = vas.instance_count
-  source              = "../.."
+  source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-4nic"
   project_id          = var.project_id
   zone                = var.zone
@@ -193,13 +193,13 @@ module bigip s
 
 ~>**NOTE:** Similarly we can have N-nic deployments based on user provided subnet_ids. With module count, user can deploy multiple bigip instances in the gcp cloud (with the default value of count being one )
 
-#### Below is the example snippet for private ip allocation
+### Below is the example snippet for private ip allocation
 
 ```hcl
 #Example 3-NIC Deployment with static private ip allocation
 module bigip {
   count               = var.instance_count
-  source              = "../.."
+  source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-3nic"
   project_id          = var.project_id
   zone                = var.zone
@@ -215,7 +215,7 @@ module bigip {
 
 These variables must be set in the module block when using this module.
 
-| Name | Description | Type | 
+| Name | Description | Type |
 |------|-------------|------|
 | prefix | This value is inserted in the beginning of each Gcp object. Note: requires alpha-numeric without special character | `string` |
 | project\_id | The GCP project identifier where the cluster will be created | `string` |
@@ -246,15 +246,16 @@ These variables have default values and don't have to be set to use this module.
 | mgmt\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
 | external\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "private_ip_secondary" = "" }] |
 | internal\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
-| DO_URL | URL to download the BIG-IP Declarative Onboarding module | `string` | latest | 
+| DO_URL | URL to download the BIG-IP Declarative Onboarding module | `string` | latest |
 | AS3_URL | URL to download the BIG-IP Application Service Extension 3 (AS3) module | `string` | latest |
-| TS_URL | URL to download the BIG-IP Telemetry Streaming module | `string` | latest | 
-| FAST_URL | URL to download the BIG-IP FAST module | `string` | latest | 
+| TS_URL | URL to download the BIG-IP Telemetry Streaming module | `string` | latest |
+| FAST_URL | URL to download the BIG-IP FAST module | `string` | latest |
 | CFE_URL | URL to download the BIG-IP Cloud Failover Extension module | `string` | latest |
 | INIT_URL | URL to download the BIG-IP runtime init module | `string` | latest |
 | custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | string  |   null   |
 
 #### Output Variables
+
 | Name | Description |
 |------|-------------|
 | mgmtPublicIP | The actual ip address allocated for the resource |
@@ -272,7 +273,7 @@ This repository is community-supported. Follow instructions below on how to rais
 
 ### Filing Issues and Getting Help
 
-If you come across a bug or other issue, use [GitHub Issues](https://github.com/f5devcentral/terraform-gcp-bigip-module/issues) to submit an issue for our team.  You can also see the current known issues on that page, which are tagged with a purple Known Issue label.
+If you come across a bug or other issue, use [GitHub Issues](https://github.com/F5Networks/terraform-gcp-bigip-module/issues) to submit an issue for our team.  You can also see the current known issues on that page, which are tagged with a purple Known Issue label.
 
 ## Copyright
 
