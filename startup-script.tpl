@@ -91,7 +91,6 @@ if [[ ${NIC_COUNT} && ! -f /config/nicswap_finished ]]; then
    #!/bin/bash
    source /usr/lib/bigstart/bigip-ready-functions
    wait_bigip_ready
-   tmsh create auth user bigipuser2 password F5site02 shell bash partition-access add { all-partitions { role admin } }
    echo "before nic swapping"
    tmsh list sys db provision.1nicautoconfig
    tmsh list sys db provision.managementeth
