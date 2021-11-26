@@ -52,18 +52,26 @@ resource "google_compute_firewall" "mgmt_firewall" {
 data "template_file" "user_data_vm0" {
   template = file("custom_onboard_big.tmpl")
   vars = {
-    bigip_username         = "bigipuser"
-    ssh_keypair            = fileexists("~/.ssh/id_rsa.pub") ? file("~/.ssh/id_rsa.pub") : ""
-    aws_secretmanager_auth = false
-    bigip_password         = "xxxx"
-    INIT_URL               = "https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.2.1/dist/f5-bigip-runtime-init-1.2.1-1.gz.run",
-    DO_URL                 = "https://github.com/F5Networks/f5-declarative-onboarding/releases/download/v1.21.0/f5-declarative-onboarding-1.21.0-3.noarch.rpm",
-    DO_VER                 = "v1.21.0"
-    AS3_URL                = "https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.28.0/f5-appsvcs-3.28.0-3.noarch.rpm",
-    AS3_VER                = "v3.28.0"
+    onboard_log                       = var.onboard_log
+    libs_dir                          = var.libs_dir
+    bigip_username                    = var.f5_username
+    gcp_secret_manager_authentication = var.gcp_secret_manager_authentication
+    bigip_password                    = (var.f5_password == "") ? (var.gcp_secret_manager_authentication ? var.gcp_secret_name : random_string.password.result) : var.f5_password
+    ssh_keypair                       = file(var.f5_ssh_publickey)
+    INIT_URL                          = var.INIT_URL,
+    DO_URL                            = var.DO_URL,
+    DO_VER                            = split("/", var.DO_URL)[7]
+    AS3_URL                           = var.AS3_URL,
+    AS3_VER                           = split("/", var.AS3_URL)[7]
+    TS_VER                            = split("/", var.TS_URL)[7]
+    TS_URL                            = var.TS_URL,
+    CFE_VER                           = split("/", var.CFE_URL)[7]
+    CFE_URL                           = var.CFE_URL,
+    FAST_URL                          = var.FAST_URL
+    FAST_VER                          = split("/", var.FAST_URL)[7]
+    NIC_COUNT                         = false
   }
 }
-
 
 module "bigip" {
   count            = var.instance_count
@@ -74,6 +82,6 @@ module "bigip" {
   image            = var.image
   service_account  = var.service_account
   mgmt_subnet_ids  = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  custom_user_data = var.custom_user_data
+  custom_user_data = data.template_file.user_data_vm0.rendered
 }
 
