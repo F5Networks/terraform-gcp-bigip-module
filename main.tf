@@ -258,7 +258,7 @@ resource "google_compute_instance" "f5vm01" {
   )
 
   provisioner "local-exec" {
-    command = "sleep 250"
+    command = "sleep ${var.sleep_secs}"
   }
   labels = var.labels
 }

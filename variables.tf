@@ -198,3 +198,9 @@ variable "metadata" {
   default     = {}
 }
 
+variable "sleep_secs" {
+  type = number
+  default = 250
+  description = "The number of seconds of delay to build into creation of BIG-IP VMs; default is 250. BIG-IP requires a few minutes to complete the onboarding process and this value can be used to delay the processing of dependent Terraform resources."
+}
+
