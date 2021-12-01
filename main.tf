@@ -259,7 +259,7 @@ resource "google_compute_instance" "f5vm01" {
 
   provisioner "local-exec" {
     command = format("%s %d", substr(pathexpand("~"), 0, 1) == "/" ? "sleep" : "start-sleep -s", var.sleep_secs)
-    interpreter = [substr(pathexpand("~"), 0, 1) == "/" ? "sh" : "powershell"]
+    interpreter = substr(pathexpand("~"), 0, 1) == "/" ? ["sh", "-c"] : ["powershell"]
   }
   labels = var.labels
 }
