@@ -250,7 +250,7 @@ resource "google_compute_instance" "f5vm01" {
     }
   }
 
-  metadata_startup_script = coalesce(var.custom_user_data, data.template_file.startup_script.rendered)
+  metadata_startup_script = replace(coalesce(var.custom_user_data, data.template_file.startup_script.rendered), "/\r/", "")
 
   metadata = merge(var.metadata, coalesce(var.f5_ssh_publickey, "unspecified") != "unspecified" ? {
     sshKeys = file(var.f5_ssh_publickey)
