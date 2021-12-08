@@ -232,8 +232,8 @@ These variables have default values and don't have to be set to use this module.
 | f5\_username | The admin username of the F5   BIG-IP that will be deployed | `string` | bigipuser |
 | f5\_password | Password of the F5  BIG-IP that will be deployed.If this is not specified random password will get generated | `string` | "" |
 | image | The self-link URI for a BIG-IP image to use as a base for the VM cluster  | `string` | "projects/f5-7626-networks-public/global/images/f5-bigip-16-0-1-1-0-0-6-payg-good-25mbps-210129040032" |
-| min_cpu_platform | Minimum CPU platform for the VM instance such as Intel Haswell or Intel Skylake | string`| Intel Skylake |
-| machine_type | The machine type to create,if you want to update this value (resize the VM) after initial creation, you must set allow_stopping_for_update to true | string` | n1-standard-4 |
+| min_cpu_platform | Minimum CPU platform for the VM instance such as Intel Haswell or Intel Skylake | `string`| Intel Skylake |
+| machine_type | The machine type to create,if you want to update this value (resize the VM) after initial creation, you must set allow_stopping_for_update to true | `string` | n1-standard-4 |
 | automatic_restart | Specifies if the instance should be restarted if it was terminated by Compute Engine (not a user) | `bool` | true |
 | preemptible | Specifies if the instance is preemptible. If this field is set to true, then automatic_restart must be set to false | `boo1` | false |
 | disk_type | The GCE disk type. May be set to pd-standard, pd-balanced or pd-ssd | `string` | pd-ssd |
@@ -252,7 +252,8 @@ These variables have default values and don't have to be set to use this module.
 | FAST_URL | URL to download the BIG-IP FAST module | `string` | latest |
 | CFE_URL | URL to download the BIG-IP Cloud Failover Extension module | `string` | latest |
 | INIT_URL | URL to download the BIG-IP runtime init module | `string` | latest |
-| custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | string  |   null   |
+| custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | `string`  |   null   |
+| sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
 
 #### Output Variables
 

@@ -79,7 +79,7 @@ extension_services:
   service_operations:
     - extensionType: do
       type: url
-      value: https://raw.githubusercontent.com/f5devcentral/terraform-gcp-bigip-module/main/config/onboard_do.json
+      value: https://raw.githubusercontent.com/F5Networks/terraform-gcp-bigip-module/main/config/onboard_do.json
 EOF
 fi
 

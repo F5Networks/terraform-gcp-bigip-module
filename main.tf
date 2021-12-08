@@ -255,9 +255,10 @@ resource "google_compute_instance" "f5vm01" {
     sshKeys = file(var.f5_ssh_publickey)
     } : {}
   )
-
-  provisioner "local-exec" {
-    command = "sleep 250"
-  }
   labels = var.labels
+}
+
+resource "time_sleep" "wait_for_google_compute_instance_f5vm" {
+  depends_on      = [google_compute_instance.f5vm01]
+  create_duration = var.sleep_time
 }
