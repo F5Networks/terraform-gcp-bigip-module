@@ -1,4 +1,4 @@
-# Deploys BIG-IP in Gcp Cloud
+# Deploys BIG-IP in GCP Cloud
 
 This Terraform module deploys N-nic F5 BIG-IP in Gcp cloud,and with module count feature we can also deploy multiple instances of BIG-IP.
 
@@ -78,12 +78,17 @@ This template uses PayGo BIG-IP image for the deployment (as default). If you wo
 
 ## Custom User data && Metadata
 
-+ By default custom_user_data will be null,bigip module will use default f5_onboard.tmpl file contents for initial BIGIP onboard connfiguration
++ By default `custom_user_data` will be `null`,this module will use default [startup-script.tpl](https://github.com/F5Networks/terraform-gcp-bigip-module/blob/main/startup-script.tpl) file contents for initial BIGIP onboard connfiguration
 
-+ If users desire custom onboard configuration,we can use this variable and pass contents of custom script to the variable to have custom onboard bigip  configuration. ( An example is provided in examples section  )
++ If users desire custom onboard configuration,we can use this variable and pass contents of custom script to the `custom_user_data` variable to have custom onboard bigip configuration. ( An example is provided in examples section [custom_user_data](https://github.com/F5Networks/terraform-gcp-bigip-module/tree/main/examples/bigip_gcp_1nic_deploy_custom_runtime_init))
+
++ `custom_user_data` script is composed of bash,tmsh and Runtime init yaml file. details of [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init)
+
+~> **Note:** When user is having `custom_user_data` script, BIG-IP onboard config (like setting users accounts,password setting and additional initial config) completely depends on `custom_user_data` script.
+
+### Example 3-NIC deployment with custom_user_data script
 
 ```hcl
-#Example 3-NIC Deployment with custom run-time-init
 module bigip {
   count               = var.instance_count
   source              = "F5Networks/bigip-module/gcp"
@@ -118,7 +123,7 @@ EOS
 }
 ```
 
-## Example Usage
+### Example Usage
 
 We have provided some common deployment [examples](https://github.com/F5Networks/terraform-gcp-bigip-module/tree/main/examples)
 
@@ -177,8 +182,8 @@ module bigip {
 
 #Example 4-NIC Deployment  Module usage(with 2 external public interfaces,one management and internal interfaces)
 
-module bigip s
-  count               = vas.instance_count
+module bigip {
+  count               = var.instance_count
   source              = "F5Networks/bigip-module/gcp"
   prefix              = "bigip-gcp-4nic"
   project_id          = var.project_id

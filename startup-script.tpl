@@ -1,11 +1,12 @@
 #!/bin/bash
 # Setup console and startup-script logging
 LOG_FILE=/var/log/cloud/startup-script.log
+mkdir -p  /var/log/cloud
 [[ -f $LOG_FILE ]] || /usr/bin/touch $LOG_FILE
 npipe=/tmp/$$.tmp
-/usr/bin/trap "rm -f $npipe" EXIT
-/usr/bin/mknod $npipe p
-/usr/bin/tee <$npipe -a $LOG_FILE /dev/ttyS0 &
+trap "rm -f $npipe" EXIT
+mknod $npipe p
+tee <$npipe -a $LOG_FILE /dev/ttyS0 &
 exec 1>&-
 exec 1>$npipe
 exec 2>&1
@@ -16,7 +17,7 @@ if [[ -f /config/startup_finished ]]; then
   exit
 fi
 
-mkdir -p  /var/log/cloud /config/cloud /var/config/rest/downloads /var/lib/cloud/icontrollx_installs
+mkdir -p /config/cloud /var/config/rest/downloads /var/lib/cloud/icontrollx_installs
 
 
 # Create runtime configuration on first boot
