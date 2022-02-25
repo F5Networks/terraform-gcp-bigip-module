@@ -258,6 +258,7 @@ These variables have default values and don't have to be set to use this module.
 | CFE_URL | URL to download the BIG-IP Cloud Failover Extension module | `string` | latest |
 | INIT_URL | URL to download the BIG-IP runtime init module | `string` | latest |
 | custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | `string`  |   null   |
+| f5_ssh_publickey | Path to the public key to be used for ssh access to the VM.  Only used with non-Windows vms and can be left as-is even if using Windows vms. If specifying a path to a certification on a Windows machine to provision a linux vm use the / in the path versus backslash. e.g. c:/home/id_rsa.pub | `string` | ~/.ssh/id_rsa.pub |
 | sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
 
 #### Output Variables
