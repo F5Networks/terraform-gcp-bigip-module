@@ -1,6 +1,12 @@
 variable "prefix" {
   description = "Prefix for resources created by this module"
 }
+
+variable "vm_name" {
+  description = "Name of F5 BIGIP VM to be used, default is empty string meaning module adds with prefix + random_id"
+  default     = ""
+}
+
 variable "project_id" {
   type        = string
   description = "The GCP project identifier where the cluster will be created."
@@ -83,6 +89,7 @@ variable "internal_subnet_ids" {
   }))
   default = [{ "subnet_id" = null, "public_ip" = null, "private_ip_primary" = null }]
 }
+
 
 variable "f5_username" {
   description = "The admin username of the F5 Bigip that will be deployed"

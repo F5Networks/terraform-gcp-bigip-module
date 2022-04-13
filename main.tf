@@ -171,7 +171,7 @@ resource "google_compute_address" "external_public_ip" {
 }
 
 resource "google_compute_instance" "f5vm01" {
-  name = format("%s", local.instance_prefix)
+  name = var.vm_name == "" ? format("%s", local.instance_prefix) : var.vm_name
   zone = var.zone
   # Scheduling options
   min_cpu_platform = var.min_cpu_platform

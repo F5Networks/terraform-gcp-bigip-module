@@ -236,6 +236,7 @@ These variables have default values and don't have to be set to use this module.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| vm\_name | Name of F5 BIGIP VM to be used, default is `empty string` meaning module adds with `prefix + random_id` | `string` | "" |
 | f5\_username | The admin username of the F5   BIG-IP that will be deployed | `string` | bigipuser |
 | f5\_password | Password of the F5  BIG-IP that will be deployed.If this is not specified random password will get generated | `string` | "" |
 | image | The self-link URI for a BIG-IP image to use as a base for the VM cluster  | `string` | "projects/f5-7626-networks-public/global/images/f5-bigip-16-0-1-1-0-0-6-payg-good-25mbps-210129040032" |
