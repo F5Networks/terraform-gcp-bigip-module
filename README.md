@@ -136,6 +136,8 @@ bigip instances based on module count.
 
 With Dynamic private ip allocation,we have to pass null value to primary/secondary private ip declaration and module count will be supported.
 
+~>**NOTE:** If you are using custom ATC tools, don't change name of ATC tools rpm file( ex: f5-declarative-onboarding-xxxx.noarch.rpm,f5-appsvcs-xxx.noarch.rpm)
+
 Below example snippets show how this module is called. ( Dynamic private ip allocation )
 
 ```hcl
@@ -251,12 +253,12 @@ These variables have default values and don't have to be set to use this module.
 | mgmt\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
 | external\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "private_ip_secondary" = "" }] |
 | internal\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
-| DO_URL | URL to download the BIG-IP Declarative Onboarding module | `string` | latest |
-| AS3_URL | URL to download the BIG-IP Application Service Extension 3 (AS3) module | `string` | latest |
-| TS_URL | URL to download the BIG-IP Telemetry Streaming module | `string` | latest |
-| FAST_URL | URL to download the BIG-IP FAST module | `string` | latest |
-| CFE_URL | URL to download the BIG-IP Cloud Failover Extension module | `string` | latest |
-| INIT_URL | URL to download the BIG-IP runtime init module | `string` | latest |
+| DO_URL | URL to download the BIG-IP Declarative Onboarding module | `string` | `latest` Note: don't change name of ATC tools rpm file |
+| AS3_URL | URL to download the BIG-IP Application Service Extension 3 (AS3) module | `string` | `latest` Note: don't change name of ATC tools rpm file |
+| TS_URL | URL to download the BIG-IP Telemetry Streaming module | `string` | `latest` Note: don't change name of ATC tools rpm file |
+| FAST_URL | URL to download the BIG-IP FAST module | `string` | `latest` Note: don't change name of ATC tools rpm file |
+| CFE_URL | URL to download the BIG-IP Cloud Failover Extension module | `string` | `latest` Note: don't change name of ATC tools rpm file |
+| INIT_URL | URL to download the BIG-IP runtime init module | `string` | `latest` Note: don't change name of ATC tools rpm file |
 | custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | `string`  |   null   |
 | f5_ssh_publickey | Path to the public key to be used for ssh access to the VM.  Only used with non-Windows vms and can be left as-is even if using Windows vms. If specifying a path to a certification on a Windows machine to provision a linux vm use the / in the path versus backslash. e.g. c:/home/id_rsa.pub | `string` | ~/.ssh/id_rsa.pub |
 | sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
