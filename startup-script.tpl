@@ -51,6 +51,7 @@ else
 EOF
 fi
 
+cat /config/cloud/runtime-init-conf.yaml > /config/cloud/runtime-init-conf-backup.yaml
 
 cat << 'EOF' >> /config/cloud/runtime-init-conf.yaml
 pre_onboard_enabled:
@@ -83,6 +84,14 @@ extension_services:
       value: https://raw.githubusercontent.com/F5Networks/terraform-gcp-bigip-module/main/config/onboard_do.json
 EOF
 fi
+
+cat << 'EOF' >> /config/cloud/runtime-init-conf-backup.yaml
+extension_services:
+  service_operations:
+    - extensionType: do
+      type: url
+      value: https://raw.githubusercontent.com/F5Networks/terraform-gcp-bigip-module/main/config/onboard_do.json
+EOF
 
 # Create nic_swap script when multi nic on first boot
 COMPUTE_BASE_URL="http://metadata.google.internal/computeMetadata/v1"
@@ -144,6 +153,8 @@ if [[ ! -f /config/nicswap_finished ]]; then
   done
   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- '--cloud gcp' 2>&1
   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml 2>&1
+  sleep 5
+  /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml 2>&1
   /usr/bin/touch /config/startup_finished
 EOF
 fi
