@@ -49,6 +49,11 @@ resource "google_compute_firewall" "mgmt_firewall" {
   source_ranges = ["0.0.0.0/0"]
 }
 
+resource "google_service_account" "f5_bigip_user" {
+  account_id  = "f5-bigip-user"
+  description = "User for F5 BIGIP"
+}
+
 module "bigip" {
   count           = var.instance_count
   source          = "../.."
@@ -56,7 +61,7 @@ module "bigip" {
   project_id      = var.project_id
   zone            = var.zone
   image           = var.image
-  service_account = var.service_account
+  service_account = google_service_account.f5_bigip_user.email
   mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
 }
 
