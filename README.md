@@ -265,6 +265,7 @@ These variables have default values and don't have to be set to use this module.
 | custom\_user\_data | Provide a custom bash script or cloud-init script the BIG-IP will run on creation | `string`  |   null   |
 | f5_ssh_publickey | Path to the public key to be used for ssh access to the VM.  Only used with non-Windows vms and can be left as-is even if using Windows vms. If specifying a path to a certification on a Windows machine to provision a linux vm use the / in the path versus backslash. e.g. c:/home/id_rsa.pub | `string` | ~/.ssh/id_rsa.pub |
 | sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
+| network_tags | The network tags which will be added to the BIG-IP VMs | `list` | [] |
 
 #### Output Variables
 

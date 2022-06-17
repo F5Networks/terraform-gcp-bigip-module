@@ -249,6 +249,9 @@ resource "google_compute_instance" "f5vm01" {
     } : {}
   )
   labels = var.labels
+
+  tags = var.network_tags
+
 }
 
 resource "time_sleep" "wait_for_google_compute_instance_f5vm" {
