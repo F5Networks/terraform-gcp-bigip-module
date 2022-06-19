@@ -210,3 +210,9 @@ variable "sleep_time" {
   default     = "300s"
   description = "The number of seconds/minutes of delay to build into creation of BIG-IP VMs; default is 250. BIG-IP requires a few minutes to complete the onboarding process and this value can be used to delay the processing of dependent Terraform resources."
 }
+
+variable "network_tags" {
+  type        = list(string)
+  default     = []
+  description = "The network tags which will be added to the BIG-IP VMs"
+}
