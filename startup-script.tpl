@@ -11,6 +11,10 @@ exec 1>&-
 exec 1>$npipe
 exec 2>&1
 
+# Run Immediately Before MCPD starts
+/usr/bin/setdb provision.extramb 1024
+/usr/bin/setdb restjavad.useextramb true
+
 # skip startup script if already complete
 if [[ -f /config/startup_finished ]]; then
   echo "Onboarding complete, skip startup script"
@@ -18,7 +22,6 @@ if [[ -f /config/startup_finished ]]; then
 fi
 
 mkdir -p /config/cloud /var/config/rest/downloads /var/lib/cloud/icontrollx_installs
-
 
 # Create runtime configuration on first boot
 if [[ ! -f /config/nicswap_finished ]]; then
@@ -31,6 +34,12 @@ runtime_parameters:
   - name: SSH_KEYS
     type: static
     value: "${ssh_keypair}"
+  - name: HOST_NAME
+    type: metadata
+    metadataProvider:
+        environment: gcp
+        type: compute
+        field: name
 EOF
 
 if ${gcp_secret_manager_authentication}; then
@@ -42,24 +51,20 @@ if ${gcp_secret_manager_authentication}; then
       type: SecretsManager
       version: latest
       secretId: ${bigip_password}
+pre_onboard_enabled: []
 EOF
 else
    cat << 'EOF' >> /config/cloud/runtime-init-conf.yaml
   - name: ADMIN_PASS
     type: static
     value: ${bigip_password}
+pre_onboard_enabled: []
 EOF
 fi
 
 cat /config/cloud/runtime-init-conf.yaml > /config/cloud/runtime-init-conf-backup.yaml
 
 cat << 'EOF' >> /config/cloud/runtime-init-conf.yaml
-pre_onboard_enabled:
-  - name: provision_rest
-    type: inline
-    commands:
-      - /usr/bin/setdb provision.extramb 1024
-      - /usr/bin/setdb restjavad.useextramb true
 extension_packages: 
   install_operations:
     - extensionType: do
@@ -77,11 +82,50 @@ extension_packages:
     - extensionType: fast
       extensionVersion: ${FAST_VER}
       extensionUrl: ${FAST_URL}
-extension_services: 
+extension_services:
   service_operations:
     - extensionType: do
-      type: url
-      value: https://raw.githubusercontent.com/F5Networks/terraform-gcp-bigip-module/main/config/onboard_do.json
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Device
+        async: true
+        Common:
+          class: Tenant
+          hostname: '{{{HOST_NAME}}}.com'
+          myNtp:
+            class: NTP
+            servers:
+              - 169.254.169.254
+            timezone: UTC
+          myDns:
+            class: DNS
+            nameServers:
+              - 169.254.169.254
+          myProvisioning:
+            class: Provision
+            ltm: nominal
+          admin:
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+          '{{{USER_NAME}}}':
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+post_onboard_enabled: []
 EOF
 fi
 
@@ -89,8 +133,47 @@ cat << 'EOF' >> /config/cloud/runtime-init-conf-backup.yaml
 extension_services:
   service_operations:
     - extensionType: do
-      type: url
-      value: https://raw.githubusercontent.com/F5Networks/terraform-gcp-bigip-module/main/config/onboard_do.json
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Device
+        async: true
+        Common:
+          class: Tenant
+          hostname: '{{{HOST_NAME}}}.com'
+          myNtp:
+            class: NTP
+            servers:
+              - 169.254.169.254
+            timezone: UTC
+          myDns:
+            class: DNS
+            nameServers:
+              - 169.254.169.254
+          myProvisioning:
+            class: Provision
+            ltm: nominal
+          admin:
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+          '{{{USER_NAME}}}':
+            class: User
+            partitionAccess:
+              all-partitions:
+                role: admin
+            password: '{{{ADMIN_PASS}}}'
+            shell: bash
+            keys:
+              - '{{{SSH_KEYS}}}'
+            userType: regular
+post_onboard_enabled: []
 EOF
 
 # Create nic_swap script when multi nic on first boot
