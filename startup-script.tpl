@@ -238,6 +238,8 @@ if [[ ! -f /config/nicswap_finished ]]; then
   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml 2>&1
   sleep 5
   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml 2>&1
+  sleep 5
+  /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml 2>&1
   /usr/bin/touch /config/startup_finished
 EOF
 fi
