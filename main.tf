@@ -2,7 +2,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 3.51"
+      version = ">= 4.31.0"
     }
   }
 }
@@ -103,7 +103,7 @@ resource "random_string" "password" {
 resource "random_string" "sa_role" {
   length    = 16
   min_lower = 1
-  number    = false
+  numeric   = false
   upper     = false
   special   = false
 }

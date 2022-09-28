@@ -14,7 +14,7 @@ Below templates are tested and worked in the following version
 
 Terraform v0.14.0
 
-+ provider registry.terraform.io/hashicorp/google v3.51.0
++ provider registry.terraform.io/hashicorp/google v4.31.0
 + provider registry.terraform.io/hashicorp/null v2.1.2
 + provider registry.terraform.io/hashicorp/random v3.0.1
 + provider registry.terraform.io/hashicorp/template v2.2.0

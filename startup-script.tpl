@@ -27,6 +27,8 @@ mkdir -p /config/cloud /var/config/rest/downloads /var/lib/cloud/icontrollx_inst
 if [[ ! -f /config/nicswap_finished ]]; then
 cat << 'EOF' > /config/cloud/runtime-init-conf.yaml
 ---
+controls:
+  extensionInstallDelayInMs: 60000
 runtime_parameters:
   - name: USER_NAME
     type: static
