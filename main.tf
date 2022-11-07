@@ -108,30 +108,6 @@ resource "random_string" "sa_role" {
   special   = false
 }
 
-data "template_file" "startup_script" {
-  template = file("${path.module}/startup-script.tpl")
-  vars = {
-    onboard_log                       = var.onboard_log
-    libs_dir                          = var.libs_dir
-    bigip_username                    = var.f5_username
-    gcp_secret_manager_authentication = var.gcp_secret_manager_authentication
-    bigip_password                    = (var.f5_password == "") ? (var.gcp_secret_manager_authentication ? var.gcp_secret_name : random_string.password.result) : var.f5_password
-    ssh_keypair                       = file(var.f5_ssh_publickey)
-    INIT_URL                          = var.INIT_URL,
-    DO_URL                            = var.DO_URL,
-    DO_VER                            = format("v%s", split("-", split("/", var.DO_URL)[length(split("/", var.DO_URL)) - 1])[3])
-    AS3_URL                           = var.AS3_URL,
-    AS3_VER                           = format("v%s", split("-", split("/", var.AS3_URL)[length(split("/", var.AS3_URL)) - 1])[2])
-    TS_VER                            = format("v%s", split("-", split("/", var.TS_URL)[length(split("/", var.TS_URL)) - 1])[2])
-    TS_URL                            = var.TS_URL,
-    CFE_VER                           = format("v%s", split("-", split("/", var.CFE_URL)[length(split("/", var.CFE_URL)) - 1])[3])
-    CFE_URL                           = var.CFE_URL,
-    FAST_URL                          = var.FAST_URL
-    FAST_VER                          = format("v%s", split("-", split("/", var.FAST_URL)[length(split("/", var.FAST_URL)) - 1])[3])
-    NIC_COUNT                         = local.multiple_nic_count > 0 ? true : false
-  }
-}
-
 data "google_secret_manager_secret_version" "secret" {
   count   = var.gcp_secret_manager_authentication ? 1 : 0
   secret  = var.gcp_secret_name
@@ -242,7 +218,27 @@ resource "google_compute_instance" "f5vm01" {
     }
   }
 
-  metadata_startup_script = replace(coalesce(var.custom_user_data, data.template_file.startup_script.rendered), "/\r/", "")
+  metadata_startup_script = replace(coalesce(var.custom_user_data, templatefile("${path.module}/startup-script.tpl",
+    {
+      onboard_log                       = var.onboard_log
+      libs_dir                          = var.libs_dir
+      bigip_username                    = var.f5_username
+      gcp_secret_manager_authentication = var.gcp_secret_manager_authentication
+      bigip_password                    = (var.f5_password == "") ? (var.gcp_secret_manager_authentication ? var.gcp_secret_name : random_string.password.result) : var.f5_password
+      ssh_keypair                       = file(var.f5_ssh_publickey)
+      INIT_URL                          = var.INIT_URL,
+      DO_URL                            = var.DO_URL,
+      DO_VER                            = format("v%s", split("-", split("/", var.DO_URL)[length(split("/", var.DO_URL)) - 1])[3])
+      AS3_URL                           = var.AS3_URL,
+      AS3_VER                           = format("v%s", split("-", split("/", var.AS3_URL)[length(split("/", var.AS3_URL)) - 1])[2])
+      TS_VER                            = format("v%s", split("-", split("/", var.TS_URL)[length(split("/", var.TS_URL)) - 1])[2])
+      TS_URL                            = var.TS_URL,
+      CFE_VER                           = format("v%s", split("-", split("/", var.CFE_URL)[length(split("/", var.CFE_URL)) - 1])[3])
+      CFE_URL                           = var.CFE_URL,
+      FAST_URL                          = var.FAST_URL
+      FAST_VER                          = format("v%s", split("-", split("/", var.FAST_URL)[length(split("/", var.FAST_URL)) - 1])[3])
+      NIC_COUNT                         = local.multiple_nic_count > 0 ? true : false
+  })), "/\r/", "")
 
   metadata = merge(var.metadata, coalesce(var.f5_ssh_publickey, "unspecified") != "unspecified" ? {
     sshKeys = file(var.f5_ssh_publickey)
