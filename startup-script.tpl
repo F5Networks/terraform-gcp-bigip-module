@@ -129,7 +129,6 @@ extension_services:
             userType: regular
 post_onboard_enabled: []
 EOF
-fi
 
 cat << 'EOF' >> /config/cloud/runtime-init-conf-backup.yaml
 extension_services:
@@ -177,6 +176,7 @@ extension_services:
             userType: regular
 post_onboard_enabled: []
 EOF
+fi
 
 # Create nic_swap script when multi nic on first boot
 COMPUTE_BASE_URL="http://metadata.google.internal/computeMetadata/v1"
