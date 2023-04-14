@@ -248,6 +248,9 @@ resource "google_compute_instance" "f5vm01" {
 
   tags = var.network_tags
 
+  lifecycle {
+    ignore_changes = [metadata["ssh-keys"],metadata_startup_script]
+  }
 }
 
 resource "time_sleep" "wait_for_google_compute_instance_f5vm" {
