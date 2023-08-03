@@ -167,7 +167,9 @@ resource "google_compute_instance" "f5vm01" {
   dynamic "network_interface" {
     for_each = [for subnet in var.external_subnet_ids : subnet if subnet.subnet_id != null && subnet.subnet_id != ""]
     content {
+      network = network_interface.value.network_id
       subnetwork = network_interface.value.subnet_id
+      subnetwork_project = network_interface.value.subnet_project_id
       network_ip = network_interface.value.private_ip_primary
       dynamic "access_config" {
         for_each = element(coalescelist(compact([network_interface.value.public_ip]), [false]), 0) ? [1] : []
@@ -189,7 +191,9 @@ resource "google_compute_instance" "f5vm01" {
   dynamic "network_interface" {
     for_each = [for subnet in var.mgmt_subnet_ids : subnet if subnet.subnet_id != null && subnet.subnet_id != ""]
     content {
+      network = network_interface.value.network_id
       subnetwork = network_interface.value.subnet_id
+      subnetwork_project = network_interface.value.subnet_project_id
       network_ip = network_interface.value.private_ip_primary
       dynamic "access_config" {
         for_each = element(coalescelist(compact([network_interface.value.public_ip]), [false]), 0) ? [1] : []
@@ -207,7 +211,9 @@ resource "google_compute_instance" "f5vm01" {
   dynamic "network_interface" {
     for_each = [for subnet in var.internal_subnet_ids : subnet if subnet.subnet_id != null && subnet.subnet_id != ""]
     content {
+      network = network_interface.value.network_id
       subnetwork = network_interface.value.subnet_id
+      subnetwork_project = network_interface.value.subnet_project_id
       network_ip = network_interface.value.private_ip_primary
       dynamic "access_config" {
         for_each = element(coalescelist(compact([network_interface.value.public_ip]), [false]), 0) ? [1] : []

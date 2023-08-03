@@ -57,7 +57,7 @@ module "bigip" {
   zone            = var.zone
   image           = var.image
   service_account = var.service_account
-  mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
+  mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
   custom_user_data = templatefile("custom_onboard_big.tmpl",
     {
       onboard_log                       = var.onboard_log

@@ -62,32 +62,38 @@ variable "disk_size_gb" {
 variable "mgmt_subnet_ids" {
   description = "List of maps of subnetids of the virtual network where the virtual machines will reside."
   type = list(object({
+    network_id         = string
     subnet_id          = string
+    subnet_project_id  = string
     public_ip          = bool
     private_ip_primary = string
   }))
-  default = [{ "subnet_id" = null, "public_ip" = null, "private_ip_primary" = null }]
+  default = [{ "network_id" = null, "subnet_id" = null, "subnet_project_id" = null, "public_ip" = null, "private_ip_primary" = null }]
 }
 
 variable "external_subnet_ids" {
   description = "List of maps of subnetids of the virtual network where the virtual machines will reside."
   type = list(object({
+    network_id           = string
     subnet_id            = string
+    subnet_project_id    = string
     public_ip            = bool
     private_ip_primary   = string
     private_ip_secondary = string
   }))
-  default = [{ "subnet_id" = null, "public_ip" = null, "private_ip_primary" = null, "private_ip_secondary" = null }]
+  default = [{ "network_id" = null, "subnet_id" = null, "subnet_project_id" = null, "public_ip" = null, "private_ip_primary" = null, "private_ip_secondary" = null }]
 }
 
 variable "internal_subnet_ids" {
   description = "List of maps of subnetids of the virtual network where the virtual machines will reside."
   type = list(object({
-    subnet_id          = string
-    public_ip          = bool
-    private_ip_primary = string
+    network_id           = string
+    subnet_id            = string
+    subnet_project_id    = string
+    public_ip            = bool
+    private_ip_primary   = string
   }))
-  default = [{ "subnet_id" = null, "public_ip" = null, "private_ip_primary" = null }]
+  default = [{ "network_id" = null, "subnet_id" = null, "subnet_project_id" = null, "public_ip" = null, "private_ip_primary" = null }]
 }
 
 
