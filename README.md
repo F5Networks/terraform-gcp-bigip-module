@@ -97,9 +97,9 @@ module bigip {
   zone                = var.zone
   image               = var.image
   service_account     = var.service_account
-  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "" }]
-  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "" }]
+  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
+  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
+  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
   custom_user_data       = var.custom_user_data
 }
 ```
@@ -150,7 +150,7 @@ module bigip {
   zone            = var.zone
   image           = var.image
   service_account = var.service_account
-  mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
+  mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
 }
 
 #Example 2-NIC Deployment Module usage
@@ -163,8 +163,8 @@ module "bigip" {
   zone                = var.zone
   image               = var.image
   service_account     = var.service_account
-  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "" }]
+  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
+  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
 }
 
 #Example 3-NIC Deployment  Module usage 
@@ -177,9 +177,9 @@ module bigip {
   zone                = var.zone
   image               = var.image
   service_account     = var.service_account
-  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "" }]
-  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "" }]
+  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
+  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
+  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
 }
 
 #Example 4-NIC Deployment  Module usage(with 2 external public interfaces,one management and internal interfaces)
@@ -192,9 +192,9 @@ module bigip {
   zone                = var.zone
   image               = var.image
   service_account     = var.service_account
-  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  external_subnet_ids = ([{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = ""  },                                         { "subnet_id" = google_compute_subnetwork.external_subnetwork2.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = ""  }])
-  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "" }]
+  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
+  external_subnet_ids = ([{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null  },                                         { "subnet_id" = google_compute_subnetwork.external_subnetwork2.id, "public_ip" = true, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null  }])
+  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
 }
 ```
 
@@ -212,9 +212,9 @@ module bigip {
   zone                = var.zone
   image               = var.image
   service_account     = var.service_account
-  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
-  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "10.2.1.2", "private_ip_secondary" = "10.2.1.3" }]
-  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "" }]
+  mgmt_subnet_ids     = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }]
+  external_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.external_subnetwork.id, "public_ip" = true, "private_ip_primary" = "10.2.1.2", "private_ip_secondary" = "10.2.1.3", "network_id" = null, "subnet_project_id" = null }]
+  internal_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.internal_subnetwork.id, "public_ip" = false, "private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }]
 }
 ```
 
@@ -251,9 +251,9 @@ These variables have default values and don't have to be set to use this module.
 | gcp_secret_version | The version of the secret to get. If it is not provided, the latest version is retrieved | `string` | latest|
 | libs\_dir | Directory on the BIG-IP to download the A&O Toolchain into | `string` | /config/cloud/gcp/node_modules |
 | onboard\_log | Directory on the BIG-IP to store the cloud-init logs | `string` | /var/log/startup-script.log |
-| mgmt\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
-| external\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "private_ip_secondary" = "" }] |
-| internal\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "" }] |
+| mgmt\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }] |
+| external\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "private_ip_secondary" = "", "network_id" = null, "subnet_project_id" = null }] |
+| internal\_subnet\_ids | List of maps of subnetids of the virtual network where the virtual machines will reside | `List of Maps` | [{ "subnet_id" = null, "public_ip" = null,"private_ip_primary" = "", "network_id" = null, "subnet_project_id" = null }] |
 | DO_URL | URL to download the BIG-IP Declarative Onboarding module | `string` | `latest` Note: don't change name of ATC tools rpm file |
 | AS3_URL | URL to download the BIG-IP Application Service Extension 3 (AS3) module | `string` | `latest` Note: don't change name of ATC tools rpm file |
 | TS_URL | URL to download the BIG-IP Telemetry Streaming module | `string` | `latest` Note: don't change name of ATC tools rpm file |
