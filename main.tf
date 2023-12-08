@@ -200,9 +200,6 @@ resource "google_compute_instance" "f5vm01" {
     }
   }
 
-
-
-
   # Internal NIC
   dynamic "network_interface" {
     for_each = [for subnet in var.internal_subnet_ids : subnet if subnet.subnet_id != null && subnet.subnet_id != ""]

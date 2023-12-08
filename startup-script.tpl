@@ -1,31 +1,21 @@
 #!/bin/bash
-# Setup console and startup-script logging
-LOG_FILE=/var/log/cloud/startup-script.log
-mkdir -p  /var/log/cloud
-[[ -f $LOG_FILE ]] || /usr/bin/touch $LOG_FILE
-npipe=/tmp/$$.tmp
-trap "rm -f $npipe" EXIT
-mknod $npipe p
-tee <$npipe -a $LOG_FILE /dev/ttyS0 &
-exec 1>&-
-exec 1>$npipe
-exec 2>&1
-
-# Run Immediately Before MCPD starts
-/usr/bin/setdb provision.extramb 1024
-/usr/bin/setdb restjavad.useextramb true
-
-# skip startup script if already complete
-if [[ -f /config/startup_finished ]]; then
-  echo "Onboarding complete, skip startup script"
-  exit
+if [ -f /config/startup_finished ]; then
+    exit
 fi
-
-mkdir -p /config/cloud /var/config/rest/downloads /var/lib/cloud/icontrollx_installs
-
-# Create runtime configuration on first boot
-if [[ ! -f /config/nicswap_finished ]]; then
-cat << 'EOF' > /config/cloud/runtime-init-conf.yaml
+if [ -f /config/first_run_flag ]; then
+   echo "Skip first run steps, already ran."
+else
+   /usr/bin/mkdir -p  /var/log/cloud /config/cloud /var/lib/cloud/icontrollx_installs /var/config/rest/downloads
+   LOG_FILE=/var/log/cloud/startup-script-pre-nic-swap.log
+   /usr/bin/touch $LOG_FILE
+   npipe=/tmp/$$.tmp
+   /usr/bin/trap "rm -f $npipe" EXIT
+   /usr/bin/mknod $npipe p
+   /usr/bin/tee <$npipe -a $LOG_FILE /dev/ttyS0 &
+   exec 1>&-
+   exec 1>$npipe
+   exec 2>&1
+   cat << 'EOF' > /config/cloud/runtime-init-conf.yaml
 ---
 controls:
   extensionInstallDelayInMs: 60000
@@ -43,7 +33,6 @@ runtime_parameters:
         type: compute
         field: name
 EOF
-
 if ${gcp_secret_manager_authentication}; then
    cat << 'EOF' >> /config/cloud/runtime-init-conf.yaml
   - name: ADMIN_PASS
@@ -63,9 +52,7 @@ else
 pre_onboard_enabled: []
 EOF
 fi
-
 cat /config/cloud/runtime-init-conf.yaml > /config/cloud/runtime-init-conf-backup.yaml
-
 cat << 'EOF' >> /config/cloud/runtime-init-conf.yaml
 extension_packages: 
   install_operations:
@@ -129,7 +116,6 @@ extension_services:
             userType: regular
 post_onboard_enabled: []
 EOF
-
 cat << 'EOF' >> /config/cloud/runtime-init-conf-backup.yaml
 extension_services:
   service_operations:
@@ -176,91 +162,83 @@ extension_services:
             userType: regular
 post_onboard_enabled: []
 EOF
-fi
-
-# Create nic_swap script when multi nic on first boot
-COMPUTE_BASE_URL="http://metadata.google.internal/computeMetadata/v1"
-
-if [[ ${NIC_COUNT} && ! -f /config/nicswap_finished ]]; then
-   cat << 'EOF' >> /config/cloud/nic_swap.sh
+   /usr/bin/cat << 'EOF' > /config/nic-swap.sh
    #!/bin/bash
-   source /usr/lib/bigstart/bigip-ready-functions
-   wait_bigip_ready
-   echo "before nic swapping"
-   tmsh list sys db provision.1nicautoconfig
-   tmsh list sys db provision.managementeth
-   echo "after nic swapping"
-   bigstart stop tmm
-   tmsh modify sys db provision.managementeth value eth1
-   tmsh modify sys db provision.1nicautoconfig value disable
-   bigstart start tmm
-   wait_bigip_ready
-   echo "---Mgmt interface setting---"
-   tmsh list sys db provision.managementeth
-   tmsh list sys db provision.1nicautoconfig
-   sed -i "s/iface0=eth0/iface0=eth1/g" /etc/ts/common/image.cfg
-   echo "Done changing interface"
-   echo "Set TMM networks"
-   MGMTADDRESS=$(curl -s -f --retry 10 -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/1/ip)
-   MGMTMASK=$(curl -s -f --retry 10 -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/1/subnetmask)
-   MGMTGATEWAY=$(curl -s -f --retry 10 -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/1/gateway)
-   MGMTMTU=$(curl -s -f --retry 10 -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/1/mtu)
-   MGMTNETWORK=$(/bin/ipcalc -n $MGMTADDRESS $MGMTMASK | cut -d= -f2)
-   echo $MGMTADDRESS
-   echo $MGMTMASK
-   echo $MGMTGATEWAY
-   echo $MGMTMTU
-   echo $MGMTNETWORK   
-   tmsh modify sys global-settings gui-setup disabled
-   tmsh modify sys global-settings mgmt-dhcp disabled
-   tmsh delete sys management-route all 
-   tmsh delete sys management-ip all
-   tmsh create sys management-ip $${MGMTADDRESS}/32
-   tmsh create sys management-route mgmt_gw network $${MGMTGATEWAY}/32 type interface mtu $${MGMTMTU}
-   tmsh create sys management-route mgmt_net network $${MGMTNETWORK}/$${MGMTMASK} gateway $${MGMTGATEWAY} mtu $${MGMTMTU}
-   tmsh create sys management-route default gateway $${MGMTGATEWAY} mtu $${MGMTMTU}
-   tmsh modify sys global-settings remote-host add { metadata.google.internal { hostname metadata.google.internal addr 169.254.169.254 } }
-   tmsh modify sys management-dhcp sys-mgmt-dhcp-config request-options delete { ntp-servers }
-   echo "Setting DNS resolver to Cloud DNS"
-   tmsh modify sys dns name-servers add { 169.254.169.254 }
-   tmsh save /sys config
-   /usr/bin/touch /config/nicswap_finished
+   /usr/bin/touch /config/nic_swap_flag
+   /usr/bin/setdb provision.managementeth eth1
+   /usr/bin/setdb provision.extramb 1000 || true
+   /usr/bin/setdb provision.restjavad.extramb 1384 || /usr/bin/setdb restjavad.useextramb true || true
+   /usr/bin/setdb iapplxrpm.timeout 300 || true
+   /usr/bin/setdb icrd.timeout 180 || true
+   /usr/bin/setdb restjavad.timeout 180 || true
+   /usr/bin/setdb restnoded.timeout 180 || true
    reboot
 EOF
-fi
-
-# Create run_runtime_init.sh script on first boot
-if [[ ! -f /config/nicswap_finished ]]; then
-  cat << 'EOF' >> /config/cloud/run_runtime_init.sh
-  #!/bin/bash
-  source /usr/lib/bigstart/bigip-ready-functions
-  wait_bigip_ready
-  for i in {1..30}; do
+   /usr/bin/cat << 'EOF' > /config/startup-script.sh
+   #!/bin/bash
+   LOG_FILE=/var/log/cloud/startup-script-post-swap-nic.log
+   touch $LOG_FILE
+   npipe=/tmp/$$.tmp
+   /usr/bin/trap "rm -f $npipe" EXIT
+   /usr/bin/mknod $npipe p
+   /usr/bin/tee <$npipe -a $LOG_FILE /dev/ttyS0 &
+   exec 1>&-
+   exec 1>$npipe
+   exec 2>&1
+   if [[ ${NIC_COUNT} ]]; then
+       # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.
+       source /usr/lib/bigstart/bigip-ready-functions
+       wait_bigip_ready
+       tmsh modify sys global-settings mgmt-dhcp disabled
+       tmsh delete sys management-route all
+       tmsh delete sys management-ip all
+       wait_bigip_ready
+       # Wait until a little more until dhcp/chmand is finished re-configuring MGMT IP w/ "chmand[4267]: 012a0003:3: Mgmt Operation:0 Dest:0.0.0.0"
+       sleep 15
+       MGMT_GW=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | grep -oE '[^ ]+$' | tr -d ';')
+       SELF_IP_MGMT=$(egrep fixed-address /var/lib/dhclient/dhclient.leases | tail -1 | grep -oE '[^ ]+$' | tr -d ';')
+       MGMT_BITMASK=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | cut -d ',' -f 2 | cut -d ' ' -f 1 | cut -d '.' -f 1)
+       MGMT_NETWORK=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | cut -d ',' -f 2 | cut -d ' ' -f 1 | cut -d '.' -f 2-4).0
+       echo "MGMT_GW - "
+       echo $MGMT_GW
+       echo "SELF_IP_MGMT - "
+       echo $SELF_IP_MGMT
+       echo "MGMT_BITMASK - "
+       echo $MGMT_BITMASK
+       echo "MGMT_NETWORK - "
+       echo $MGMT_NETWORK
+       tmsh create sys management-ip $SELF_IP_MGMT/32
+       echo "tmsh list sys management-ip - "
+       tmsh list sys management-ip
+       tmsh create sys management-route mgmt_gw network $MGMT_GW/32 type interface
+       tmsh create sys management-route mgmt_net network $MGMT_NETWORK/$MGMT_BITMASK gateway $MGMT_GW
+       tmsh create sys management-route defaultManagementRoute network default gateway $MGMT_GW mtu 1460
+       echo "tmsh list sys management-route - "
+       tmsh list sys management-route
+       tmsh modify sys global-settings remote-host add { metadata.google.internal { hostname metadata.google.internal addr 169.254.169.254 } }
+       tmsh save /sys config
+   fi
+   for i in {1..30}; do
     curl -fv --retry 1 --connect-timeout 5 -L ${INIT_URL} -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10
-  done
-  bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- '--cloud gcp' 2>&1
-  /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml 2>&1
-  sleep 5
-  /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml 2>&1
-  sleep 5
-  /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml 2>&1
-  /usr/bin/touch /config/startup_finished
+   done
+   # install and run f5-bigip-runtime-init
+   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- '--cloud gcp'
+   /usr/bin/cat /config/cloud/runtime-init-conf.yaml
+   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml
+   sleep 5
+   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml
+   /usr/bin/touch /config/startup_finished
 EOF
+   /usr/bin/chmod +x /config/nic-swap.sh
+   /usr/bin/chmod +x /config/startup-script.sh
+   MULTI_NIC="${NIC_COUNT}"
+   /usr/bin/touch /config/first_run_flag
 fi
-
-# Run scripts based on number of nics
-if ${NIC_COUNT}; then
-  if [[ -f /config/nicswap_finished ]]; then
-    echo "Running run_runtime_init.sh"
-    chmod +x /config/cloud/run_runtime_init.sh
-    nohup /config/cloud/run_runtime_init.sh &
-  else
-    chmod +x /config/cloud/nic_swap.sh
-    nohup /config/cloud/nic_swap.sh &
-  fi
+if [[ $MULTI_NIC == "true" ]]; then
+   nohup /config/nic-swap.sh &
 else
-    echo "Running run_runtime_init.sh"
-    chmod +x /config/cloud/run_runtime_init.sh
-    nohup /config/cloud/run_runtime_init.sh &
+   /usr/bin/touch /config/nic_swap_flag
 fi
-
+if [ -f /config/nic_swap_flag ]; then
+   nohup /config/startup-script.sh &
+fi

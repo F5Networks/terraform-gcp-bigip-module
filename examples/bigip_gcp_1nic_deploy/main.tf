@@ -31,7 +31,7 @@ resource "google_compute_network" "vpc" {
 
 resource "google_compute_subnetwork" "mgmt_subnetwork" {
   name          = format("%s-mgmt-%s", var.prefix, random_id.id.hex)
-  ip_cidr_range = "10.0.0.0/16"
+  ip_cidr_range = "10.1.0.0/24"
   region        = var.region
   network       = google_compute_network.vpc.id
 }

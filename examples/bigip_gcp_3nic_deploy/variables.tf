@@ -23,7 +23,7 @@ variable "zone" {
 }
 variable "image" {
   type        = string
-  default     = "projects/f5-7626-networks-public/global/images/f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809"
+  default     = "projects/f5-7626-networks-public/global/images/f5-bigip-16-1-4-1-0-53-5-payg-best-plus-25mbps-231026120516"
   description = "The self-link URI for a BIG-IP image to use as a base for the VM cluster.This can be an official F5 image from GCP Marketplace, or a customised image."
 }
 
