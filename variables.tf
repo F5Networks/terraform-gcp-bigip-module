@@ -43,7 +43,7 @@ variable "preemptible" {
 
 variable "image" {
   type        = string
-  default     = "projects/f5-7626-networks-public/global/images/f5-bigip-17-1-0-1-0-0-4-payg-best-plus-25mbps-230407103349"
+  default     = "projects/f5-7626-networks-public/global/images/f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547"
   description = "This can be one of: the image's self_link, projects/{project}/global/images/{image}, projects/{project}/global/images/family/{family}, global/images/{image}, global/images/family/{family}, family/{family}, {project}/{family}, {project}/{image}, {family}, or {image}."
 }
 
@@ -207,7 +207,7 @@ variable "metadata" {
 
 variable "sleep_time" {
   type        = string
-  default     = "1500s"
+  default     = "600s"
   description = "The number of seconds/minutes of delay to build into creation of BIG-IP VMs; default is 250. BIG-IP requires a few minutes to complete the onboarding process and this value can be used to delay the processing of dependent Terraform resources."
 }
 

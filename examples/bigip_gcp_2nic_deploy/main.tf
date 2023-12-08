@@ -38,20 +38,20 @@ resource "google_compute_network" "extvpc2" {
 
 resource "google_compute_subnetwork" "mgmt_subnetwork" {
   name          = format("%s-mgmt-%s", var.prefix, random_id.id.hex)
-  ip_cidr_range = "10.1.0.0/16"
+  ip_cidr_range = "10.0.0.0/24"
   region        = var.region
   network       = google_compute_network.mgmtvpc.id
 }
 resource "google_compute_subnetwork" "external_subnetwork" {
   name          = format("%s-ext-%s", var.prefix, random_id.id.hex)
-  ip_cidr_range = "10.2.0.0/16"
+  ip_cidr_range = "10.0.1.0/24"
   region        = var.region
   network       = google_compute_network.extvpc.id
 }
 
 resource "google_compute_subnetwork" "external_subnetwork2" {
   name          = format("%s-ext2-%s", var.prefix, random_id.id.hex)
-  ip_cidr_range = "10.3.0.0/16"
+  ip_cidr_range = "10.0.2.0/24"
   region        = var.region
   network       = google_compute_network.extvpc2.id
 }
