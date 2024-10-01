@@ -61,7 +61,7 @@ module "bigip" {
   project_id      = var.project_id
   zone            = var.zone
   image           = var.image
-  sleep_time      = "1800s"
+  sleep_time      = "1000s"
   service_account = google_service_account.f5_bigip_user.email
   mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
 }

@@ -185,7 +185,7 @@ EOF
    exec 1>&-
    exec 1>$npipe
    exec 2>&1
-   if [[ ${NIC_COUNT} ]]; then
+   if ${NIC_COUNT} ; then
        # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.
        source /usr/lib/bigstart/bigip-ready-functions
        wait_bigip_ready
@@ -234,7 +234,7 @@ EOF
    MULTI_NIC="${NIC_COUNT}"
    /usr/bin/touch /config/first_run_flag
 fi
-if [[ $MULTI_NIC == "true" ]]; then
+if ${NIC_COUNT} ; then
    nohup /config/nic-swap.sh &
 else
    /usr/bin/touch /config/nic_swap_flag
