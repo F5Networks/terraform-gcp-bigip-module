@@ -185,7 +185,7 @@ EOF
    exec 1>&-
    exec 1>$npipe
    exec 2>&1
-   if ${NIC_COUNT} ; then
+   if [[ ${NIC_COUNT} ]]; then
        # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.
        source /usr/lib/bigstart/bigip-ready-functions
        wait_bigip_ready
@@ -218,15 +218,6 @@ EOF
        tmsh modify sys global-settings remote-host add { metadata.google.internal { hostname metadata.google.internal addr 169.254.169.254 } }
        tmsh save /sys config
    fi
-   for i in {1..30}; do
-    curl -fv --retry 1 --connect-timeout 5 -L ${INIT_URL} -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10
-   done
-   # install and run f5-bigip-runtime-init
-   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- '--cloud gcp'
-   /usr/bin/cat /config/cloud/runtime-init-conf.yaml
-   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml
-   sleep 5
-   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf-backup.yaml
    /usr/bin/touch /config/startup_finished
 EOF
    /usr/bin/chmod +x /config/nic-swap.sh
@@ -234,7 +225,7 @@ EOF
    MULTI_NIC="${NIC_COUNT}"
    /usr/bin/touch /config/first_run_flag
 fi
-if ${NIC_COUNT} ; then
+if [[ $MULTI_NIC == "true" ]]; then
    nohup /config/nic-swap.sh &
 else
    /usr/bin/touch /config/nic_swap_flag

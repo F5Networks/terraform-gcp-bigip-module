@@ -3,6 +3,7 @@ variable "instance_count" {
   type        = number
   default     = 1
 }
+
 variable "prefix" {
   description = "Prefix for resources created by this module"
   type        = string
@@ -16,6 +17,7 @@ variable "region" {
   type        = string
   description = "The compute region which will host the BIG-IP VMs"
 }
+
 variable "zone" {
   type        = string
   default     = "us-central1-a"
@@ -32,3 +34,14 @@ variable "service_account" {
   type        = string
 }
 
+variable "metadata" {
+  description = "Provide custom metadata values for BIG-IP instance"
+  type        = map(string)
+  default     = {}
+}
+
+
+variable "f5_ssh_publickey" {
+  description = "Path to the public key to be used for ssh access to the VM.  Only used with non-Windows vms and can be left as-is even if using Windows vms. If specifying a path to a certification on a Windows machine to provision a linux vm use the / in the path versus backslash. e.g. c:/home/id_rsa.pub"
+  default     = "~/.ssh/id_rsa.pub"
+}
