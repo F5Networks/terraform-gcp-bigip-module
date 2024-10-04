@@ -265,6 +265,8 @@ These variables have default values and don't have to be set to use this module.
 | sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
 | network_tags | The network tags which will be added to the BIG-IP VMs | `list` | [] |
 
+~>**NOTE:** Even `f5_ssh_publickey` optional parameter, it expects the default value of `~/.ssh/id_rsa.pub` for ssh access to the VM. Please make sure to have the public key in the path specified.
+
 #### Output Variables
 
 | Name | Description |
