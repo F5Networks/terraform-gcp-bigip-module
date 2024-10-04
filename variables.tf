@@ -136,14 +136,14 @@ variable "gcp_secret_version" {
 variable "DO_URL" {
   description = "URL to download the BIG-IP Declarative Onboarding module"
   type        = string
-  default     = "https://github.com/F5Networks/f5-declarative-onboarding/releases/download/v1.42.0/f5-declarative-onboarding-1.42.0-9.noarch.rpm"
+  default     = "https://github.com/F5Networks/f5-declarative-onboarding/releases/download/v1.46.0/f5-declarative-onboarding-1.46.0-7.noarch.rpm"
 }
 ## Please check and update the latest AS3 URL from https://github.com/F5Networks/f5-appsvcs-extension/releases/latest 
 # always point to a specific version in order to avoid inadvertent configuration inconsistency
 variable "AS3_URL" {
   description = "URL to download the BIG-IP Application Service Extension 3 (AS3) module"
   type        = string
-  default     = "https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.49.0/f5-appsvcs-3.49.0-6.noarch.rpm"
+  default     = "https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.53.0/f5-appsvcs-3.53.0-7.noarch.rpm"
 }
 
 ## Please check and update the latest TS URL from https://github.com/F5Networks/f5-telemetry-streaming/releases/latest 
@@ -151,7 +151,7 @@ variable "AS3_URL" {
 variable "TS_URL" {
   description = "URL to download the BIG-IP Telemetry Streaming module"
   type        = string
-  default     = "https://github.com/F5Networks/f5-telemetry-streaming/releases/download/v1.34.0/f5-telemetry-1.34.0-1.noarch.rpm"
+  default     = "https://github.com/F5Networks/f5-telemetry-streaming/releases/download/v1.36.0/f5-telemetry-1.36.0-1.noarch.rpm"
 }
 
 ## Please check and update the latest Failover Extension URL from https://github.com/F5Networks/f5-cloud-failover-extension/releases/latest 
@@ -159,7 +159,7 @@ variable "TS_URL" {
 variable "CFE_URL" {
   description = "URL to download the BIG-IP Cloud Failover Extension module"
   type        = string
-  default     = "https://github.com/F5Networks/f5-cloud-failover-extension/releases/download/v2.0.2/f5-cloud-failover-2.0.2-2.noarch.rpm"
+  default     = "https://github.com/F5Networks/f5-cloud-failover-extension/releases/download/v2.1.3/f5-cloud-failover-2.1.3-3.noarch.rpm"
 }
 
 ## Please check and update the latest FAST URL from https://github.com/F5Networks/f5-appsvcs-templates/releases/latest 
@@ -174,7 +174,7 @@ variable "FAST_URL" {
 variable "INIT_URL" {
   description = "URL to download the BIG-IP runtime init"
   type        = string
-  default     = "https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.1/dist/f5-bigip-runtime-init-2.0.1-1.gz.run"
+  default     = "https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.3/dist/f5-bigip-runtime-init-2.0.3-1.gz.run"
 }
 
 variable "labels" {
