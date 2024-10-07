@@ -4,6 +4,8 @@ This Terraform module deploys N-nic F5 BIG-IP in Gcp cloud,and with module count
 
 ## Prerequisites
 
+SSH-Keys : Generate a ssh key pair and keep .pub file in .ssh folder with name id_rsa.pub.
+
 Getting Started with the Google Provider ( <https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/getting_started> )
 
 This module is supported from Terraform 0.13 version onwards.
@@ -32,7 +34,7 @@ This module is supported in the following bigip and terraform version
 |:point_up: |By default bigip module will have random password setting to give dynamic password generation|
 |----|---|
 
-|:point_up: |Users Can explicitly provide password as input to Module using optional Variable "f5_password"|
+|:point_up: |Users Can explicitly provide password as input to Module using optional Variable "f5_password". NOTE: Please don't use admin in password as configuration will fail.|
 |----|---|
 
 |:point_up:  | To use Gcp secret manager ,we have to enable the variable "gcp_secret_manager_authentication" to true and supply the variables with secret name,version |
@@ -152,6 +154,7 @@ module bigip {
   service_account = var.service_account
   mgmt_subnet_ids = [{ "subnet_id" = google_compute_subnetwork.mgmt_subnetwork.id, "public_ip" = true, "private_ip_primary" = "" }]
 }
+NOTE: As per the requirement users can add fields like network_tags, f5_ssh_publickey, f5_password, vm_name, etc.
 
 #Example 2-NIC Deployment Module usage
 
@@ -265,7 +268,7 @@ These variables have default values and don't have to be set to use this module.
 | sleep_time | The number of seconds/minutes of delay to build into creation of BIG-IP VMs | `string` | 300s |
 | network_tags | The network tags which will be added to the BIG-IP VMs | `list` | [] |
 
-~>**NOTE:** Even `f5_ssh_publickey` optional parameter, it expects the default value of `~/.ssh/id_rsa.pub` for ssh access to the VM. Please make sure to have the public key in the path specified.
+~>**NOTE:** `f5_ssh_publickey` is a mandatory parameter, which expects the default ssh .pub file location of `~/.ssh/id_rsa.pub` for ssh access to the VM. Please make sure to have the public key in the path specified or users can use this variable parameter in the module for custom paths.
 
 #### Output Variables
 
