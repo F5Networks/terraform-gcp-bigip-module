@@ -215,7 +215,7 @@ resource "google_compute_instance" "f5vm01" {
     }
   }
 
-  metadata_startup_script = replace(coalesce(var.custom_user_data, templatefile("${path.module}/startup-script.tpl",
+  metadata_startup_script = replace(coalesce(var.custom_user_data, templatefile("${path.module}/startup-script-working.tpl",
     {
       onboard_log                       = var.onboard_log
       libs_dir                          = var.libs_dir
